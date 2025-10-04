@@ -1,0 +1,1 @@
+Error fetching data for PMC9547011: 400 Client Error: Bad Request for url: https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pmc&id=PMC9547011&rettype=biocxml
