@@ -49,3 +49,7 @@ From the NASA Space Biology publication summary below, extract the following ent
 NASA Space Biology Publication text:
 $pub_text
 """
+
+query_prompt = """
+
+"""
