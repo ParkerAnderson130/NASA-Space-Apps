@@ -1,10 +1,10 @@
+from dotenv import load_dotenv
+import glob
+import json
 import os
+from neo4j import GraphDatabase
 from openai import OpenAI
 from string import Template
-import json
-from neo4j import GraphDatabase
-import glob
-from dotenv import load_dotenv
 from time import sleep
 
 from prompts import publications_prompt
