@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { UserMessage, AssistantMessage } from "./MessageTypes.js";
-//import "./styles/Chat.scss";
+import "./styles/Chat.scss";
 
 export default function Chat() {
   const [question, setQuestion] = useState("");
@@ -15,7 +15,7 @@ export default function Chat() {
     setQuestion("");
 
     try {
-      const response = await fetch("http://localhost:8000/ask", {
+      /**const response = await fetch("http://localhost:8000/ask", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -33,6 +33,17 @@ export default function Chat() {
         cypher: data.cypher_query,
         dbResults: data.database_results,
       };
+      **/
+      // Dummy assistant message
+      const assistantMessage = {
+        type: "assistant",
+        text: `This is a dummy response for: "${question}"`,
+        cypher: "MATCH (n) RETURN n LIMIT 5",
+        dbResults: [
+          { id: 1, name: "Node A" },
+          { id: 2, name: "Node B" },
+        ],
+      };
 
       setMessages((prev) => [...prev, assistantMessage]);
     } catch (err) {
@@ -45,8 +56,8 @@ export default function Chat() {
   };
 
   return (
-    <div className="chat-container">
-      <h2>Neo4j Conversational Chat</h2>
+    <div className="container">
+      <h2 className="title"><i>How can we connect you?</i></h2>
       <div className="chat-window">
         {messages.map((msg, idx) => {
           if (msg.type === "user") return <UserMessage key={idx} text={msg.text} />;
@@ -69,7 +80,7 @@ export default function Chat() {
           value={question}
           onChange={(e) => setQuestion(e.target.value)}
         />
-        <button type="submit">Send</button>
+        <button type="submit">↑</button>
       </form>
     </div>
   );

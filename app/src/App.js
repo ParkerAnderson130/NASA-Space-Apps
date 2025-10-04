@@ -2,7 +2,9 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Chat from "./pages/Chat.js";
-import Landing from "./pages/Landing.js"; // optional home page
+import Landing from "./pages/Landing.js";
+import "./styles.scss"
+
 
 function App() {
   return (
