@@ -1,0 +1,72 @@
+import React, { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import '../pages/styles/Landing.css';
+
+const Landing = () => {
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    // Generate random stars
+    const starsContainer = document.getElementById('stars');
+    const numStars = 150;
+
+    for (let i = 0; i < numStars; i++) {
+      const star = document.createElement('div');
+      star.className = 'star';
+      star.style.left = Math.random() * 100 + '%';
+      star.style.top = Math.random() * 100 + '%';
+      star.style.animationDelay = Math.random() * 3 + 's';
+      starsContainer.appendChild(star);
+    }
+
+    // Cleanup
+    return () => {
+      if (starsContainer) {
+        starsContainer.innerHTML = '';
+      }
+    };
+  }, []);
+
+  const handleStartChat = () => {
+    navigate('/chat');
+  };
+
+  return (
+    <div className="landing-wrapper">
+      <section className="hero">
+        <div className="stars" id="stars"></div>
+        
+        <div className="hero-content">
+          <div className="left-section">
+            <div className="vertex-logo">Vertex</div>
+            <h1>Explore the Cosmos with AI</h1>
+            <p className="subtitle">
+              Access comprehensive space research, publications, and mission data through 
+              intelligent conversation. Your gateway to NASA's knowledge base.
+            </p>
+            <button onClick={handleStartChat} className="cta-button">
+              Launch Assistant
+            </button>
+          </div>
+
+          <div className="right-section">
+            <div className="orbit-container">
+              <div className="orbit orbit-1">
+                <div className="planet planet-1"></div>
+              </div>
+              <div className="orbit orbit-2">
+                <div className="planet planet-2"></div>
+              </div>
+              <div className="orbit orbit-3">
+                <div className="planet planet-3"></div>
+              </div>
+              <div className="center-star"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  );
+};
+
+export default Landing;
