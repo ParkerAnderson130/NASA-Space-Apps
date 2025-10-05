@@ -10,7 +10,7 @@ def extract_text_from_xml(xml_string, pmc_id):
     try:
         root = ET.fromstring(xml_string)
         
-        # Strategy 1: Look for <body> section with <p> tags (standard JATS)
+        #look for <body> section with <p> tags
         body = root.find('.//body')
         if body is not None:
             for p in body.iter('p'):
@@ -18,7 +18,7 @@ def extract_text_from_xml(xml_string, pmc_id):
                 if text:
                     paragraphs.append(text)
         
-        # Strategy 2: If no body, try <abstract> section
+        # if it has no body tag, try <abstract> tags
         if not paragraphs:
             abstract = root.find('.//abstract')
             if abstract is not None:
@@ -27,7 +27,7 @@ def extract_text_from_xml(xml_string, pmc_id):
                     if text:
                         paragraphs.append(text)
         
-        # Strategy 3: Look for <sec> (sections) anywhere in the document
+        # if no abstract tag, look for sec tags anywhere in the document
         if not paragraphs:
             for sec in root.iter('sec'):
                 for p in sec.iter('p'):
@@ -35,7 +35,7 @@ def extract_text_from_xml(xml_string, pmc_id):
                     if text:
                         paragraphs.append(text)
         
-        # Strategy 4: Just find all <p> tags anywhere
+        # brute force - just find all <p> tags anywhere
         if not paragraphs:
             for p in root.iter('p'):
                 text = get_element_text(p)
@@ -45,7 +45,7 @@ def extract_text_from_xml(xml_string, pmc_id):
         return paragraphs
         
     except ET.ParseError:
-        # Try to fix common XML issues
+        # fix the typical issues that arise from reading XML
         return extract_from_broken_xml(xml_string, pmc_id)
     except Exception as e:
         print(f"  Error processing {pmc_id}: {e}")
@@ -63,12 +63,12 @@ def extract_from_broken_xml(xml_string, pmc_id):
     """Try to extract paragraphs from malformed XML using regex"""
     paragraphs = []
     
-    # Look for <p>...</p> tags using regex
+    # now we look for <p>...</p> tags using regex
     p_pattern = r'<p[^>]*>(.*?)</p>'
     matches = re.findall(p_pattern, xml_string, re.DOTALL)
     
     for match in matches:
-        # Remove any remaining XML tags
+        
         text = re.sub(r'<[^>]+>', '', match)
         text = text.strip()
         if text and len(text) > 20:  # Ignore very short matches
@@ -76,13 +76,13 @@ def extract_from_broken_xml(xml_string, pmc_id):
     
     return paragraphs
 
-# Read CSV
+# read CSV file
 csv_file = 'SB_publication_PMC_with_bioc.csv'
 df = pd.read_csv(csv_file)
 
 print(f"Processing {len(df)} articles with enhanced extraction...\n")
 
-# Create output directory
+# generate output directory
 data_dir = Path('data')
 data_dir.mkdir(exist_ok=True)
 
@@ -97,19 +97,19 @@ for idx, row in df.iterrows():
     if idx % 100 == 0:
         print(f"Processing {idx+1}/{len(df)}...")
     
-    # Skip if already exists
+    
     txt_file = data_dir / f"{pmc_id}.txt"
     if txt_file.exists():
         successful += 1
         continue
     
-    # Skip if no XML data
+    
     if pd.isna(xml_string) or not xml_string.strip():
         still_failed += 1
         failed_ids.append(pmc_id)
         continue
     
-    # Extract paragraphs with multiple strategies
+    # extract the paragraphs
     paragraphs = extract_text_from_xml(xml_string, pmc_id)
     
     if paragraphs:
@@ -123,7 +123,7 @@ for idx, row in df.iterrows():
 print(f"\n{'='*60}")
 print(f"Final Results:")
 print(f"Successfully extracted: {successful}/{len(df)}")
-print(f"Still failed: {still_failed}/{len(df)}")
+print(f"The files that were failed to be extracted: {still_failed}/{len(df)}")
 print(f"\nText files saved to: {data_dir}")
 
 if failed_ids:
